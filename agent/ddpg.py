@@ -138,6 +138,7 @@ class DDPGAgent:
                  init_critic,
                  use_tb,
                  use_wandb,
+                 update_encoder,
                  meta_dim=0):
         self.reward_free = reward_free
         self.obs_type = obs_type
@@ -156,6 +157,7 @@ class DDPGAgent:
         self.init_critic = init_critic
         self.feature_dim = feature_dim
         self.solved_meta = None
+        self.update_encoder = update_encoder
 
         # models
         if obs_type == 'pixels':
