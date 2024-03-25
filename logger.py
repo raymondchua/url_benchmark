@@ -11,12 +11,12 @@ from torch.utils.tensorboard import SummaryWriter
 
 COMMON_TRAIN_FORMAT = [('frame', 'F', 'int'), ('step', 'S', 'int'),
                        ('episode', 'E', 'int'), ('episode_length', 'L', 'int'),
-                       ('episode_reward', 'R', 'float'),
+                       ('episode_reward', 'R', 'float'), ('task_id', 'TASK', 'int'),
                        ('fps', 'FPS', 'float'), ('total_time', 'T', 'time')]
 
 COMMON_EVAL_FORMAT = [('frame', 'F', 'int'), ('step', 'S', 'int'),
                       ('episode', 'E', 'int'), ('episode_length', 'L', 'int'),
-                      ('episode_reward', 'R', 'float'),
+                      ('episode_reward', 'R', 'float'), ('task_id', 'TASK', 'int'),
                       ('total_time', 'T', 'time')]
 
 
