@@ -32,3 +32,11 @@ PRIMAL_TASKS = {
     'jaco': 'jaco_reach_top_left',
     'quadruped': 'quadruped_walk'
 }
+
+CRL_WALKER_TASKS = ['walker_run', 'walker_flip',]
+CRL_QUADRUPED_TASKS = ['quadruped_run', 'quadruped_jump']
+
+CRL_TASKS = {
+    'walker': CRL_WALKER_TASKS,
+    'quadruped': CRL_QUADRUPED_TASKS,
+}
