@@ -156,7 +156,7 @@ class DDPGAgent:
         self.stddev_clip = stddev_clip
         self.init_critic = init_critic
         self.feature_dim = feature_dim
-        self.solved_meta = None
+        self.solved_meta = OrderedDict()
         self.update_encoder = update_encoder
 
         # models
