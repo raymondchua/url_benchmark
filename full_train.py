@@ -253,7 +253,7 @@ class Workspace:
         with snapshot.open('wb') as f:
             torch.save(payload, f)
 
-@hydra.main(config_path='.', config_name='full_train')
+@hydra.main(config_path=".", config_name="full_train", version_base=None)
 def main(cfg):
     from full_train import Workspace as W
     root_dir = Path.cwd()
