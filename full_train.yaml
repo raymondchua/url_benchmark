@@ -1,7 +1,7 @@
 defaults:
   - agent: ddpg
-  - resources: null
   - _self_ # this yaml file is overriding configs from the Defaults List (eg. {agent}.yaml)
+  - resources: null
 
 # mode
 reward_free: false
@@ -29,8 +29,8 @@ nstep: ${agent.nstep}
 update_encoder: true # should always be true for pre-training
 # misc
 seed: 1
-#device: cuda
-device: cpu
+device: cuda
+#device: cpu
 save_eval_video: true
 save_train_video: false
 use_tb: false
