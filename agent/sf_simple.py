@@ -100,7 +100,7 @@ class SFSimpleAgent(DDPGAgent):
         self.critic_opt = torch.optim.Adam(self.critic.parameters(),
                                            lr=self.lr)
 
-        self.task_params = nn.Parameter(torch.randn(self.sf_dim)).to(self.device)
+        self.task_params = nn.Parameter(torch.randn(self.sf_dim, requires_grad=True, device=self.device))
         self.task_opt = torch.optim.Adam([self.task_params], lr=self.lr_task)
 
         # set solved_meta to the value of the task_params
