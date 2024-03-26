@@ -1,6 +1,7 @@
 defaults:
   - agent: ddpg
   - resources: null
+  - _self_ # this yaml file is overriding configs from the Defaults List (eg. {agent}.yaml)
 
 # mode
 reward_free: false
