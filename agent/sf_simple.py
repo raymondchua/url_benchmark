@@ -183,6 +183,12 @@ class SFSimpleAgent(DDPGAgent):
             next_action = dist.sample(clip=self.stddev_clip)
             next_rep = self.critic(next_obs, next_action, task)[-1]
 
+        # print which device is next_rep is on
+        print(next_rep.device)
+        print(self.task_params.device)
+
+
+
         predicted_reward = torch.einsum("bi,i->b", next_rep, self.task_params).reshape(-1, 1)
         reward_prediction_loss = F.mse_loss(predicted_reward, reward)
 
