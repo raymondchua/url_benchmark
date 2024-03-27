@@ -160,14 +160,18 @@ class SFSimpleAgent(DDPGAgent):
             obs = obs.detach()
             next_obs = next_obs.detach()
 
+        # task_normalized = task
+        # task_normalized = task / np.linalg.norm(task)
+
         # extend observations with task
         obs = torch.cat([obs, task], dim=1)
         next_obs = torch.cat([next_obs, task], dim=1)
 
         # update meta
-        metrics.update(
-            self.regress_meta_grad_descent(next_obs.detach(), task, reward, step)
-        )
+        if step % self.update_task_every_step == 0:
+            metrics.update(
+                self.regress_meta_grad_descent(next_obs.detach(), task, reward, step)
+            )
 
         # update critic
         metrics.update(
