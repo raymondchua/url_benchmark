@@ -20,7 +20,7 @@ eval_every_frames: 10000
 num_eval_episodes: 10
 # snapshot
 snapshots: [100000, 500000, 1000000, 2000000]
-snapshot_dir: ../../../full_train/models/${obs_type}/${domain}/${agent.name}/${seed}
+snapshot_dir: ./full_train/models/${obs_type}/${domain}/${agent.name}/${seed}
 # replay buffer
 replay_buffer_size: 1000000
 replay_buffer_num_workers: 4
@@ -29,8 +29,8 @@ nstep: ${agent.nstep}
 update_encoder: true # should always be true for pre-training
 # misc
 seed: 1
-device: cuda
-#device: cpu
+#device: cuda
+device: cpu
 save_eval_video: true
 save_train_video: false
 use_tb: false
