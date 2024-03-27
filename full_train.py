@@ -104,7 +104,8 @@ class Workspace:
                 cfg.experiment, cfg.agent.name, cfg.domain, cfg.obs_type,
                 str(cfg.seed)
             ])
-            wandb.init(project="urlb", group=cfg.agent.name, name=exp_name, config=self._cfg_flatten)
+            project_name = "continual_rl" + self.cfg.domain
+            wandb.init(project=project_name, group=cfg.agent.name, name=exp_name, config=self._cfg_flatten)
 
     @property
     def global_step(self):
