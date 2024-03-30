@@ -38,6 +38,7 @@ use_wandb: false
 # experiment
 experiment: exp
 num_exposures: 2
+log_freq: 10  # log every n episodes
 
 
 hydra:
