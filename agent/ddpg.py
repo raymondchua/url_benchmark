@@ -219,11 +219,8 @@ class DDPGAgent:
         inputs = [h]
         value_normalized = None
         for value in meta.values():
-            # value_normalized = value / np.linalg.norm(value)
-            # # value = torch.as_tensor(value, device=self.device).unsqueeze(0)
-            # value_normalized = torch.as_tensor(value_normalized, device=self.device).unsqueeze(0)
-            # inputs.append(value_normalized)
             value = torch.as_tensor(value, device=self.device).unsqueeze(0)
+            value = value / torch.norm(value)
             inputs.append(value)
         inpt = torch.cat(inputs, dim=-1)
         #assert obs.shape[-1] == self.obs_shape[-1]
