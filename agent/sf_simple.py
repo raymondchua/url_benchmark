@@ -160,12 +160,12 @@ class SFSimpleAgent(DDPGAgent):
             obs = obs.detach()
             next_obs = next_obs.detach()
 
-        # task_normalized = task
-        # task_normalized = task / np.linalg.norm(task)
+        task_normalized = np.copy(task)
+        task_normalized = task / np.linalg.norm(task_normalized)
 
-        # extend observations with task
-        obs = torch.cat([obs, task], dim=1)
-        next_obs = torch.cat([next_obs, task], dim=1)
+        # extend observations with normalized task
+        obs = torch.cat([obs, task_normalized], dim=1)
+        next_obs = torch.cat([next_obs, task_normalized], dim=1)
 
         # update meta
         if step % self.update_task_every_step == 0:
@@ -176,7 +176,7 @@ class SFSimpleAgent(DDPGAgent):
         # update critic
         metrics.update(
             self.update_critic(
-                obs.detach(), action, reward, discount, next_obs.detach(), task, step
+                obs.detach(), action, reward, discount, next_obs.detach(), task.detach(), step
             )
         )
 
@@ -216,7 +216,7 @@ class SFSimpleAgent(DDPGAgent):
         with torch.no_grad():
             meta = self.task_params.detach().cpu().numpy()
             # normalize solved meta using l2 norm
-            meta = meta / np.linalg.norm(meta)
+            # meta = meta / np.linalg.norm(meta)
             self.solved_meta = OrderedDict()
             self.solved_meta["task"] = meta
 
