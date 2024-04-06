@@ -160,7 +160,7 @@ class SFSimpleAgent(DDPGAgent):
             obs = obs.detach()
             next_obs = next_obs.detach()
 
-        task_normalized = np.copy(task)
+        task_normalized = np.copy(task.detach().cpu().numpy())
         task_normalized = task / np.linalg.norm(task_normalized)
 
         # extend observations with normalized task
