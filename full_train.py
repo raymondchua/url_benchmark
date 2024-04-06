@@ -165,7 +165,11 @@ class Workspace:
         total_returns = 0
 
         for exposure_id in range(self.cfg.num_exposures):
+            if self.cfg.terminate_after_first_task and exposure_id > 0:
+                break
             for task_id in range(self.num_tasks):
+                if self.cfg.terminate_after_first_task and task_id > 0:
+                    break
                 task_step = 0
                 self.current_task_id = task_id
                 current_task = self.tasks[task_id]

@@ -39,6 +39,7 @@ use_wandb: false
 experiment: exp
 num_exposures: 2
 log_freq: 10  # log every n episodes
+terminate_after_first_task: false
 
 
 hydra:
