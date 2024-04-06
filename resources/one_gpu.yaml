@@ -4,7 +4,7 @@ defaults:
 hydra:
   mode: MULTIRUN
   sweep:
-    dir: /home/chuaraym/scratch/exp_sweep/${now:%Y.%m.%d}/${now:%H%M}_${domains.project_name}
+    dir: /home/chuaraym/scratch/exp_sweep/${now:%Y.%m.%d}/${now:%H%M}_$continual_rl_{domain}
     subdir: ${hydra.job.num}
   launcher:
     array_parallelism: 16
