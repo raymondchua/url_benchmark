@@ -181,7 +181,7 @@ class SFSimpleAgent(DDPGAgent):
         )
 
         # update actor
-        metrics.update(self.update_actor(obs.detach(), task, step))
+        metrics.update(self.update_actor(obs.detach(), task.detach(), step))
 
         # update critic target
         utils.soft_update_params(
