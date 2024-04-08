@@ -16,7 +16,7 @@ discount: 0.99
 num_train_frames: 1000010
 num_seed_frames: 4000
 # eval
-eval_every_frames: 10000
+eval_every_frames: 20000
 num_eval_episodes: 10
 # snapshot
 snapshots: [100000, 500000, 1000000, 2000000]
