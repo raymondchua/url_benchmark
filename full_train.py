@@ -33,6 +33,7 @@ def make_agent(obs_type, obs_spec, action_spec, num_expl_steps, cfg):
     cfg.obs_shape = obs_spec.shape
     cfg.action_shape = action_spec.shape
     cfg.num_expl_steps = num_expl_steps
+    print("instantiating agent...")
     return hydra.utils.instantiate(cfg)
 
 class Workspace:

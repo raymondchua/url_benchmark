@@ -76,6 +76,7 @@ class SFSimpleAgent(DDPGAgent):
     def __init__(
         self, update_task_every_step, sf_dim, num_init_steps, lr_task, **kwargs
     ):
+        print("Beginning of SFSimpleAgent init")
         self.sf_dim = sf_dim
         self.update_task_every_step = update_task_every_step
         self.num_init_steps = num_init_steps
@@ -87,6 +88,8 @@ class SFSimpleAgent(DDPGAgent):
 
         # create actor and critic
         super().__init__(**kwargs)
+
+
 
         # overwrite critic with critic sf
         self.critic = CriticSF(
@@ -117,6 +120,8 @@ class SFSimpleAgent(DDPGAgent):
         with torch.no_grad():
             self.solved_meta = OrderedDict()
             self.solved_meta["task"] = self.task_params.detach().cpu().numpy()
+
+        print("End of SFSimpleAgent init")
 
         self.train()
         self.critic_target.train()
