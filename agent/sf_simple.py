@@ -100,6 +100,9 @@ class SFSimpleAgent(DDPGAgent):
             self.hidden_dim,
             self.sf_dim,
         ).to(self.device)
+
+        print("critic initialized...")
+
         self.critic_target = CriticSF(
             self.obs_type,
             self.obs_dim,
@@ -108,7 +111,12 @@ class SFSimpleAgent(DDPGAgent):
             self.hidden_dim,
             self.sf_dim,
         ).to(self.device)
+
+        print("critic target initialized...")
+
         self.critic_target.load_state_dict(self.critic.state_dict())
+
+        print("critic target loaded...")
         self.critic_opt = torch.optim.Adam(self.critic.parameters(), lr=self.lr)
 
         self.task_params = nn.Parameter(

@@ -177,10 +177,18 @@ class DDPGAgent:
         self.actor = Actor(obs_type, self.obs_dim, self.action_dim,
                            feature_dim, hidden_dim).to(device)
 
+        print("actor initialized")
+
         self.critic = Critic(obs_type, self.obs_dim, self.action_dim,
                              feature_dim, hidden_dim).to(device)
+
+        print("critic initialized")
+
         self.critic_target = Critic(obs_type, self.obs_dim, self.action_dim,
                                     feature_dim, hidden_dim).to(device)
+
+        print("critic target initialized")
+
         self.critic_target.load_state_dict(self.critic.state_dict())
 
         print("critic and actor initialized")
