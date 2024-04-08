@@ -47,6 +47,9 @@ class Workspace:
         self.logger = Logger(self.work_dir,
                              use_tb=cfg.use_tb,
                              use_wandb=cfg.use_wandb)
+
+        print("logger created...")
+
         # create envs
         self.tasks = CRL_TASKS[self.cfg.domain]
         self.num_tasks = len(self.tasks)
@@ -57,12 +60,16 @@ class Workspace:
         self.eval_env = dmc.make(task0, cfg.obs_type, cfg.frame_stack,
                                  cfg.action_repeat, cfg.seed)
 
+        print("envs created...")
+
         # create agent
         self.agent = make_agent(cfg.obs_type,
                                 self.train_env.observation_spec(),
                                 self.train_env.action_spec(),
                                 cfg.num_seed_frames // cfg.action_repeat,
                                 cfg.agent)
+
+        print("agent created...")
 
         # get meta specs
         meta_specs = self.agent.get_meta_specs()
@@ -72,9 +79,13 @@ class Workspace:
                       specs.Array((1,), np.float32, 'reward'),
                       specs.Array((1,), np.float32, 'discount'))
 
+        print("replay buffer created...")
+
         # create data storage
         self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
                                                   self.work_dir / 'buffer')
+
+        print("data storage created...")
 
         # create replay buffer
         self.replay_loader = make_replay_loader(self.replay_storage,
@@ -82,6 +93,9 @@ class Workspace:
                                                 cfg.batch_size,
                                                 cfg.replay_buffer_num_workers,
                                                 False, cfg.nstep, cfg.discount)
+
+        print("replay loader created...")
+
         self._replay_iter = None
 
         # create video recorders
@@ -89,10 +103,13 @@ class Workspace:
             self.work_dir if cfg.save_eval_video else None,
             camera_id=0 if 'quadruped' not in self.cfg.domain else 2,
             use_wandb=self.cfg.use_wandb)
+
         self.train_video_recorder = TrainVideoRecorder(
             self.work_dir if cfg.save_train_video else None,
             camera_id=0 if 'quadruped' not in self.cfg.domain else 2,
             use_wandb=self.cfg.use_wandb)
+
+        print("video recorders created...")
 
         self.timer = utils.Timer()
         self._global_step = 0
