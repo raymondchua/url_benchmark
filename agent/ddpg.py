@@ -141,8 +141,6 @@ class DDPGAgent:
                  update_encoder,
                  meta_dim=0):
 
-        print("Beginning of DDPGAgent init")
-
         self.reward_free = reward_free
         self.obs_type = obs_type
         self.obs_shape = obs_shape
@@ -172,26 +170,16 @@ class DDPGAgent:
             self.encoder = nn.Identity()
             self.obs_dim = obs_shape[0] + meta_dim
 
-        print("End of DDPGAgent init")
-
         self.actor = Actor(obs_type, self.obs_dim, self.action_dim,
                            feature_dim, hidden_dim).to(device)
-
-        print("actor initialized")
 
         self.critic = Critic(obs_type, self.obs_dim, self.action_dim,
                              feature_dim, hidden_dim).to(device)
 
-        print("critic initialized")
-
         self.critic_target = Critic(obs_type, self.obs_dim, self.action_dim,
                                     feature_dim, hidden_dim).to(device)
 
-        print("critic target initialized")
-
         self.critic_target.load_state_dict(self.critic.state_dict())
-
-        print("critic and actor initialized")
 
         # optimizers
 
@@ -202,8 +190,6 @@ class DDPGAgent:
             self.encoder_opt = None
         self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=lr)
         self.critic_opt = torch.optim.Adam(self.critic.parameters(), lr=lr)
-
-        print("optimizers initialized")
 
         self.train()
         self.critic_target.train()

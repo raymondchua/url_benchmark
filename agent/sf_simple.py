@@ -76,7 +76,6 @@ class SFSimpleAgent(DDPGAgent):
     def __init__(
         self, update_task_every_step, sf_dim, num_init_steps, lr_task, **kwargs
     ):
-        print("Beginning of SFSimpleAgent init")
         self.sf_dim = sf_dim
         self.update_task_every_step = update_task_every_step
         self.num_init_steps = num_init_steps
@@ -101,8 +100,6 @@ class SFSimpleAgent(DDPGAgent):
             self.sf_dim,
         ).to(self.device)
 
-        print("critic initialized...")
-
         self.critic_target = CriticSF(
             self.obs_type,
             self.obs_dim,
@@ -112,11 +109,10 @@ class SFSimpleAgent(DDPGAgent):
             self.sf_dim,
         ).to(self.device)
 
-        print("critic target initialized...")
+
 
         self.critic_target.load_state_dict(self.critic.state_dict())
 
-        print("critic target loaded...")
         self.critic_opt = torch.optim.Adam(self.critic.parameters(), lr=self.lr)
 
         self.task_params = nn.Parameter(
@@ -128,8 +124,6 @@ class SFSimpleAgent(DDPGAgent):
         with torch.no_grad():
             self.solved_meta = OrderedDict()
             self.solved_meta["task"] = self.task_params.detach().cpu().numpy()
-
-        print("End of SFSimpleAgent init")
 
         self.train()
         self.critic_target.train()
