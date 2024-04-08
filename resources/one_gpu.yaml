@@ -4,7 +4,7 @@ defaults:
 hydra:
   mode: MULTIRUN
   sweep:
-    dir: /home/chuaraym/scratch/exp_sweep/${now:%Y.%m.%d}/${now:%H%M}_$continual_rl_{domain}
+    dir: /home/chuaraym/scratch/exp_sweep/${now:%Y.%m.%d}/${now:%H%M}_continual_rl_${domain}
     subdir: ${hydra.job.num}
   launcher:
     array_parallelism: 16
@@ -13,7 +13,7 @@ hydra:
       mail-type: BEGIN,END,FAIL,REQUEUE
       mail-user: raymond.chua@mail.mcgill.ca
       output: ${hydra.sweep.dir}/.submitit/slurm-%j.out
-      time: 23:00:00
+      time: 1-00:00:00
     comment: null
     constraint: null
     cpus_per_gpu: null
