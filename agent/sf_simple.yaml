@@ -18,7 +18,7 @@ feature_dim: 50
 stddev_schedule: 0.2
 stddev_clip: 0.3
 sf_dim: 10
-update_task_every_step: 5
+update_task_every_step: 16
 nstep: 3
 batch_size: 1024
 init_critic: true
