@@ -115,6 +115,7 @@ class Workspace:
         self.timer = utils.Timer()
         self._global_step = 0
         self._global_episode = 0
+        self._exposure_id = 0
 
         # flatten the cfg file
         self._cfg_flatten = utils.dictionary_flatten(self.cfg)
@@ -173,6 +174,7 @@ class Workspace:
             log('episode', self.global_episode)
             log('step', self.global_step)
             log('task_id', self.current_task_id)
+            log('exposure_id', self._exposure_id)
 
     def train(self):
         # predicates
@@ -189,10 +191,12 @@ class Workspace:
             if self.cfg.terminate_after_first_task and exposure_id > 0:
                 break
             for task_id in range(self.num_tasks):
+                total_returns_task = 0
                 if self.cfg.terminate_after_first_task and task_id > 0:
                     break
                 task_step = 0
                 self.current_task_id = task_id
+                self._exposure_id = exposure_id
                 current_task = self.tasks[task_id]
 
                 # delete any old training and eval environment
@@ -232,6 +236,8 @@ class Workspace:
                                     log('step', self.global_step)
                                     log('task_id', task_id)
                                     log('total_returns', total_returns)
+                                    log('total_returns_task', total_returns_task)
+                                    log('exposure_id', exposure_id)
 
                         # reset env
                         time_step = self.train_env.reset()
@@ -269,6 +275,7 @@ class Workspace:
                     time_step = self.train_env.step(action)
                     episode_reward += time_step.reward
                     total_returns += time_step.reward
+                    total_returns_task += time_step.reward
                     self.replay_storage.add(time_step, meta)
                     self.train_video_recorder.record(time_step.observation)
                     episode_step += 1
