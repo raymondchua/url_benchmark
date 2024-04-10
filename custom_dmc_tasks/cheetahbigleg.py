@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-"""Cheetah Domain."""
+"""Cheetah Big Leg Domain. Leg is longer by 1.25x following gym-extensions.
+   https://github.com/Breakend/gym-extensions.git"""
 
 import collections
 import os
@@ -49,7 +50,7 @@ def get_model_and_assets():
     """Returns a tuple containing the model XML string and a dict of assets."""
     root_dir = os.path.dirname(os.path.dirname(__file__))
     xml = resources.GetResource(
-        os.path.join(root_dir, "custom_dmc_tasks", "cheetah.xml")
+        os.path.join(root_dir, "custom_dmc_tasks", "cheetahbigleg.xml")
     )
     return xml, common.ASSETS
 
@@ -58,7 +59,7 @@ def get_model_and_assets():
 def run(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
     """Returns the run task."""
     physics = Physics.from_xml_string(*get_model_and_assets())
-    task = Cheetah(random=random)
+    task = CheetahBigLeg(random=random)
     environment_kwargs = environment_kwargs or {}
     return control.Environment(
         physics, task, time_limit=time_limit, **environment_kwargs
@@ -69,7 +70,7 @@ def run(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
 def run_backward(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
     """Returns the run task."""
     physics = Physics.from_xml_string(*get_model_and_assets())
-    task = Cheetah(forward=False, flip=False, random=random)
+    task = CheetahBigLeg(forward=False, flip=False, random=random)
     environment_kwargs = environment_kwargs or {}
     return control.Environment(
         physics, task, time_limit=time_limit, **environment_kwargs
@@ -80,7 +81,7 @@ def run_backward(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs
 def flip(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
     """Returns the run task."""
     physics = Physics.from_xml_string(*get_model_and_assets())
-    task = Cheetah(forward=True, flip=True, random=random)
+    task = CheetahBigLeg(forward=True, flip=True, random=random)
     environment_kwargs = environment_kwargs or {}
     return control.Environment(
         physics, task, time_limit=time_limit, **environment_kwargs
@@ -91,7 +92,7 @@ def flip(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
 def flip_backward(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwargs=None):
     """Returns the run task."""
     physics = Physics.from_xml_string(*get_model_and_assets())
-    task = Cheetah(forward=False, flip=True, random=random)
+    task = CheetahBigLeg(forward=False, flip=True, random=random)
     environment_kwargs = environment_kwargs or {}
     return control.Environment(
         physics, task, time_limit=time_limit, **environment_kwargs
@@ -99,24 +100,24 @@ def flip_backward(time_limit=_DEFAULT_TIME_LIMIT, random=None, environment_kwarg
 
 
 class Physics(mujoco.Physics):
-    """Physics simulation with additional features for the Cheetah domain."""
+    """Physics simulation with additional features for the CheetahBigLeg domain."""
 
     def speed(self):
-        """Returns the horizontal speed of the Cheetah."""
+        """Returns the horizontal speed of the CheetahBigLeg."""
         return self.named.data.sensordata["torso_subtreelinvel"][0]
 
     def angmomentum(self):
-        """Returns the angular momentum of torso of the Cheetah about Y axis."""
+        """Returns the angular momentum of torso of the CheetahBigLeg about Y axis."""
         return self.named.data.subtree_angmom["torso"][1]
 
 
-class Cheetah(base.Task):
-    """A `Task` to train a running Cheetah."""
+class CheetahBigLeg(base.Task):
+    """A `Task` to train a running CheetahBigLeg."""
 
     def __init__(self, forward=True, flip=False, random=None):
         self._forward = 1 if forward else -1
         self._flip = flip
-        super(Cheetah, self).__init__(random=random)
+        super(CheetahBigLeg, self).__init__(random=random)
 
     def initialize_episode(self, physics):
         """Sets the state of the environment at the start of each episode."""
