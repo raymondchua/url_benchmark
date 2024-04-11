@@ -98,9 +98,14 @@ PRIMAL_TASKS = {
 # CRL_QUADRUPED_TASKS = ['quadruped_run', 'quadruped_jump']
 #
 
-
+"""Walker and Cheetah tasks for CRL experiments."""
 CRL_WALKER_TASKS = [
     "walker_run",
+    "walkerbigleg_run",
+]
+
+CRL_WALKER_DIFF_REWARD_TASKS = [
+    "walker_walk",
     "walkerbigleg_run",
 ]
 
@@ -109,9 +114,19 @@ CRL_CHEETAH_TASKS = [
     "cheetahbigleg_run",
 ]
 
-CRL_TASKS = {
+CRL_CHEETAH_DIFF_REWARD_TASKS = [
+    "cheetah_run",
+    "cheetahbigleg_run_backward",
+]
+
+CRL_TASKS_SAME_REWARD = {
     'walker': CRL_WALKER_TASKS,
     'cheetah': CRL_CHEETAH_TASKS,
+}
+
+CRL_TASKS_DIFF_REWARD = {
+    'walker': CRL_WALKER_DIFF_REWARD_TASKS,
+    'cheetah': CRL_CHEETAH_DIFF_REWARD_TASKS,
 }
 
 

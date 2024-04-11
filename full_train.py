@@ -26,7 +26,7 @@ import pstats
 
 torch.backends.cudnn.benchmark = True
 
-from dmc_benchmark import PRIMAL_TASKS, CRL_TASKS
+from dmc_benchmark import PRIMAL_TASKS, CRL_TASKS_SAME_REWARD, CRL_TASKS_DIFF_REWARD
 
 def make_agent(obs_type, obs_spec, action_spec, num_expl_steps, cfg):
     cfg.obs_type = obs_type
@@ -52,7 +52,12 @@ class Workspace:
         print("logger created...")
 
         # create envs
-        self.tasks = CRL_TASKS[self.cfg.domain]
+        if self.cfg.same_reward_for_all_tasks:
+            self.tasks = CRL_TASKS_SAME_REWARD[self.cfg.domain]
+
+        else:
+            self.tasks = CRL_TASKS_DIFF_REWARD[self.cfg.domain]
+
         self.num_tasks = len(self.tasks)
         self.current_task_id = 0    # task id always starts from 0
         task0 = self.tasks[self.current_task_id]
