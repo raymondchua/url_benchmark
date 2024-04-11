@@ -85,21 +85,21 @@ class Workspace:
         print("replay buffer created...")
 
         # create data storage
-        # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-        #                                           self.work_dir / 'buffer')
+        self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+                                                  self.work_dir / 'buffer')
         self.replay_storage = None
 
         print("data storage created...")
         #
         # create replay buffer
-        # self.replay_loader = make_replay_loader(self.replay_storage,
-        #                                         cfg.replay_buffer_size,
-        #                                         cfg.batch_size,
-        #                                         cfg.replay_buffer_num_workers,
-        #                                         False, cfg.nstep, cfg.discount)
+        self.replay_loader = make_replay_loader(self.replay_storage,
+                                                cfg.replay_buffer_size,
+                                                cfg.batch_size,
+                                                cfg.replay_buffer_num_workers,
+                                                False, cfg.nstep, cfg.discount)
         self.replay_loader = None
 
-        # print("replay loader created...")
+        print("replay loader created...")
 
         self._replay_iter = None
 
@@ -213,27 +213,27 @@ class Workspace:
                                          self.cfg.action_repeat, self.cfg.seed)
 
                 # delete any old replay buffer and replay loader
-                if self.replay_storage is not None:
-                    del self.replay_storage, self.replay_loader
+                # if self.replay_storage is not None:
+                #     del self.replay_storage, self.replay_loader
 
                 # get meta specs
-                meta_specs = self.agent.get_meta_specs()
+                # meta_specs = self.agent.get_meta_specs()
                 # create replay buffer
-                data_specs = (self.train_env.observation_spec(),
-                              self.train_env.action_spec(),
-                              specs.Array((1,), np.float32, 'reward'),
-                              specs.Array((1,), np.float32, 'discount'))
+                # data_specs = (self.train_env.observation_spec(),
+                #               self.train_env.action_spec(),
+                #               specs.Array((1,), np.float32, 'reward'),
+                #               specs.Array((1,), np.float32, 'discount'))
 
-                # create new replay buffer
-                self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-                                                          self.work_dir / 'buffer')
-
-                # create replay buffer
-                self.replay_loader = make_replay_loader(self.replay_storage,
-                                                        self.cfg.replay_buffer_size,
-                                                        self.cfg.batch_size,
-                                                        self.cfg.replay_buffer_num_workers,
-                                                        False, self.cfg.nstep, self.cfg.discount)
+                # # create new replay buffer
+                # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+                #                                           self.work_dir / 'buffer')
+                #
+                # # create replay buffer
+                # self.replay_loader = make_replay_loader(self.replay_storage,
+                #                                         self.cfg.replay_buffer_size,
+                #                                         self.cfg.batch_size,
+                #                                         self.cfg.replay_buffer_num_workers,
+                #                                         False, self.cfg.nstep, self.cfg.discount)
 
                 episode_step, episode_reward = 0, 0
                 time_step = self.train_env.reset()
