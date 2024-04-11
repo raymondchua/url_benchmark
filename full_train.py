@@ -87,7 +87,7 @@ class Workspace:
                                                   self.work_dir / 'buffer')
 
         print("data storage created...")
-
+        #
         # create replay buffer
         self.replay_loader = make_replay_loader(self.replay_storage,
                                                 cfg.replay_buffer_size,
@@ -95,7 +95,7 @@ class Workspace:
                                                 cfg.replay_buffer_num_workers,
                                                 False, cfg.nstep, cfg.discount)
 
-        print("replay loader created...")
+        # print("replay loader created...")
 
         self._replay_iter = None
 
@@ -199,6 +199,9 @@ class Workspace:
                 self._exposure_id = exposure_id
                 current_task = self.tasks[task_id]
 
+                # delete any old replay buffer and replay loader
+                del self.replay_storage, self.replay_loader
+
                 # delete any old training and eval environment
                 del self.train_env, self.eval_env
 
@@ -207,6 +210,25 @@ class Workspace:
                                           self.cfg.action_repeat, self.cfg.seed)
                 self.eval_env = dmc.make(current_task, self.cfg.obs_type, self.cfg.frame_stack,
                                          self.cfg.action_repeat, self.cfg.seed)
+
+                # get meta specs
+                meta_specs = self.agent.get_meta_specs()
+                # create replay buffer
+                data_specs = (self.train_env.observation_spec(),
+                              self.train_env.action_spec(),
+                              specs.Array((1,), np.float32, 'reward'),
+                              specs.Array((1,), np.float32, 'discount'))
+
+                # create new replay buffer
+                self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+                                                          self.work_dir / 'buffer')
+
+                # create replay buffer
+                self.replay_loader = make_replay_loader(self.replay_storage,
+                                                        self.cfg.replay_buffer_size,
+                                                        self.cfg.batch_size,
+                                                        self.cfg.replay_buffer_num_workers,
+                                                        False, self.cfg.nstep, self.cfg.discount)
 
                 episode_step, episode_reward = 0, 0
                 time_step = self.train_env.reset()
