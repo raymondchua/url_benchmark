@@ -87,7 +87,7 @@ class Workspace:
         # create data storage
         self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
                                                   self.work_dir / 'buffer')
-        self.replay_storage = None
+        # self.replay_storage = None
 
         print("data storage created...")
         #
@@ -97,7 +97,7 @@ class Workspace:
                                                 cfg.batch_size,
                                                 cfg.replay_buffer_num_workers,
                                                 False, cfg.nstep, cfg.discount)
-        self.replay_loader = None
+        # self.replay_loader = None
 
         print("replay loader created...")
 
