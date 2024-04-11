@@ -88,17 +88,19 @@ class Workspace:
         print("replay buffer created...")
 
         # create data storage
-        self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-                                                  self.work_dir / 'buffer')
+        # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+        #                                           self.work_dir / 'buffer')
+        self.replay_storage = None
 
         print("data storage created...")
         #
         # create replay buffer
-        self.replay_loader = make_replay_loader(self.replay_storage,
-                                                cfg.replay_buffer_size,
-                                                cfg.batch_size,
-                                                cfg.replay_buffer_num_workers,
-                                                False, cfg.nstep, cfg.discount)
+        # self.replay_loader = make_replay_loader(self.replay_storage,
+        #                                         cfg.replay_buffer_size,
+        #                                         cfg.batch_size,
+        #                                         cfg.replay_buffer_num_workers,
+        #                                         False, cfg.nstep, cfg.discount)
+        self.replay_loader = None
 
         # print("replay loader created...")
 
@@ -204,9 +206,6 @@ class Workspace:
                 self._exposure_id = exposure_id
                 current_task = self.tasks[task_id]
 
-                # delete any old replay buffer and replay loader
-                del self.replay_storage, self.replay_loader
-
                 # delete any old training and eval environment
                 del self.train_env, self.eval_env
 
@@ -215,6 +214,10 @@ class Workspace:
                                           self.cfg.action_repeat, self.cfg.seed)
                 self.eval_env = dmc.make(current_task, self.cfg.obs_type, self.cfg.frame_stack,
                                          self.cfg.action_repeat, self.cfg.seed)
+
+                # delete any old replay buffer and replay loader
+                if self.replay_storage is not None:
+                    del self.replay_storage, self.replay_loader
 
                 # get meta specs
                 meta_specs = self.agent.get_meta_specs()
@@ -252,6 +255,7 @@ class Workspace:
                             elapsed_time, total_time = self.timer.reset()
                             episode_frame = episode_step * self.cfg.action_repeat
                             if self.global_episode % self.cfg.log_freq == 0:
+                                print("replay storage size: ", len(self.replay_storage))
                                 with self.logger.log_and_dump_ctx(self.global_frame,
                                                                   ty='train') as log:
                                     log('fps', episode_frame / elapsed_time)
