@@ -21,9 +21,6 @@ from logger import Logger
 from replay_buffer import ReplayBufferStorage, make_replay_loader
 from video import TrainVideoRecorder, VideoRecorder
 
-import cProfile
-import pstats
-
 torch.backends.cudnn.benchmark = True
 
 from dmc_benchmark import PRIMAL_TASKS, CRL_TASKS_SAME_REWARD, CRL_TASKS_DIFF_REWARD
@@ -333,14 +330,7 @@ def main(cfg):
         workspace.load_snapshot()
 
     print("workspace loaded. Training...")
-
-    with cProfile.Profile() as pr:
-        workspace.train()
-
-    stats = pstats.Stats(pr)
-    stats.strip_dirs()
-    stats.sort_stats('cumtime')
-    stats.print_stats()
+    workspace.train()
 
 if __name__ == '__main__':
     main()
