@@ -64,6 +64,9 @@ class Actor(nn.Module):
         mu = torch.tanh(mu)
         std = torch.ones_like(mu) * std
 
+        print("mu: ", mu)
+        print("std: ", std)
+
         dist = utils.TruncatedNormal(mu, std)
         return dist
 
