@@ -211,6 +211,8 @@ class Workspace:
                     action = self.agent.act(
                         time_step.observation, meta, self.global_step, eval_mode=True
                     )
+                print("timestep observation: ", time_step.observation)
+                print("meta: ", meta)
                 print("action: ", action)
                 time_step = current_eval_env.step(action)
                 self.eval_video_recorder.record(current_eval_env)
