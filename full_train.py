@@ -165,14 +165,15 @@ class Workspace:
             self._replay_iter = iter(self.replay_loader)
         return self._replay_iter
 
-    def eval(self, task_id: int = None):
+    def eval(self, task_id: int = None, meta=None):
 
         assert task_id is not None, "task_id must be provided for evaluation"
+        assert meta is not None, "meta must be provided for evaluation"
 
         current_eval_env = self.eval_envs[task_id]
         step, episode, total_reward = 0, 0, 0
         eval_until_episode = utils.Until(self.cfg.num_eval_episodes)
-        meta = self.agent.init_meta()
+        # meta = self.agent.init_meta()
         while eval_until_episode(episode):
             time_step = current_eval_env.reset()
             self.eval_video_recorder.init(current_eval_env, enabled=(episode == 0))
@@ -289,13 +290,13 @@ class Workspace:
                         episode_step = 0
                         episode_reward = 0
 
+                    meta = self.agent.solved_meta
+
                     # try to evaluate
                     if eval_every_step(self.global_step):
                         self.logger.log('eval_total_time', self.timer.total_time(),
                                         self.global_frame)
-                        self.eval(task_id)
-
-                    meta = self.agent.solved_meta
+                        self.eval(task_id, meta)
 
                     # sample action
                     with torch.no_grad(), utils.eval_mode(self.agent):
