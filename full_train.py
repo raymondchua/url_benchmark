@@ -253,28 +253,8 @@ class Workspace:
                 # create new training and eval environment
                 current_train_env = self.train_envs[task_id]
 
-                # delete any old replay buffer and replay loader
-                # if self.replay_storage is not None:
-                #     del self.replay_storage, self.replay_loader
-
-                # get meta specs
-                # meta_specs = self.agent.get_meta_specs()
-                # create replay buffer
-                # data_specs = (self.train_env.observation_spec(),
-                #               self.train_env.action_spec(),
-                #               specs.Array((1,), np.float32, 'reward'),
-                #               specs.Array((1,), np.float32, 'discount'))
-
-                # # create new replay buffer
-                # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-                #                                           self.work_dir / 'buffer')
-                #
-                # # create replay buffer
-                # self.replay_loader = make_replay_loader(self.replay_storage,
-                #                                         self.cfg.replay_buffer_size,
-                #                                         self.cfg.batch_size,
-                #                                         self.cfg.replay_buffer_num_workers,
-                #                                         False, self.cfg.nstep, self.cfg.discount)
+                if self.cfg.reset_buffer_every_task:
+                    self.replay_storage.clear()
 
                 episode_step, episode_reward = 0, 0
                 time_step = current_train_env.reset()
