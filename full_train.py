@@ -73,24 +73,24 @@ class Workspace:
                                 cfg.agent)
 
         print("agent created...")
-        #
-        # # get meta specs
-        # meta_specs = self.agent.get_meta_specs()
-        # # create replay buffer
-        # data_specs = (self.train_env.observation_spec(),
-        #               self.train_env.action_spec(),
-        #               specs.Array((1,), np.float32, 'reward'),
-        #               specs.Array((1,), np.float32, 'discount'))
-        #
-        # print("replay buffer created...")
-        #
-        # # create data storage
-        # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-        #                                           self.work_dir / 'buffer')
-        # # self.replay_storage = None
-        #
-        # print("data storage created...")
-        # #
+
+        # get meta specs
+        meta_specs = self.agent.get_meta_specs()
+        # create replay buffer
+        data_specs = (self.train_env.observation_spec(),
+                      self.train_env.action_spec(),
+                      specs.Array((1,), np.float32, 'reward'),
+                      specs.Array((1,), np.float32, 'discount'))
+
+        print("replay buffer created...")
+
+        # create data storage
+        self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+                                                  self.work_dir / 'buffer')
+        # self.replay_storage = None
+
+        print("data storage created...")
+
         # # create replay buffer
         # self.replay_loader = make_replay_loader(self.replay_storage,
         #                                         cfg.replay_buffer_size,
