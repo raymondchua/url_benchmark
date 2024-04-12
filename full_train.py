@@ -57,13 +57,6 @@ class Workspace:
 
         self.num_tasks = len(self.tasks)
         self.current_task_id = 0    # task id always starts from 0
-        # task0 = self.tasks[self.current_task_id]
-        # self.train_env = dmc.make(task0, cfg.obs_type, cfg.frame_stack,
-        #                           cfg.action_repeat, cfg.seed)
-        # self.eval_env = dmc.make(task0, cfg.obs_type, cfg.frame_stack,
-        #                          cfg.action_repeat, cfg.seed)
-
-        print("envs created...")
 
         # create video recorders
         self.eval_video_recorder = VideoRecorder(
@@ -107,6 +100,8 @@ class Workspace:
 
             self.train_envs.append(train_env)
             self.eval_envs.append(eval_env)
+
+        print("envs created...")
 
         # create agent
         self.agent = make_agent(cfg.obs_type,
