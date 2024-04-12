@@ -160,6 +160,8 @@ class DDPGAgent:
         self.solved_meta = OrderedDict()
         self.update_encoder = update_encoder
 
+        print("initializing DDPGAgent...")
+
         # models
         if obs_type == 'pixels':
             self.aug = utils.RandomShiftsAug(pad=4)
@@ -170,11 +172,17 @@ class DDPGAgent:
             self.encoder = nn.Identity()
             self.obs_dim = obs_shape[0] + meta_dim
 
+        print("encoder initialized...")
+
         self.actor = Actor(obs_type, self.obs_dim, self.action_dim,
                            feature_dim, hidden_dim).to(device)
 
+        print("actor initialized...")
+
         self.critic = Critic(obs_type, self.obs_dim, self.action_dim,
                              feature_dim, hidden_dim).to(device)
+
+        print("critic initialized...")
 
         self.critic_target = Critic(obs_type, self.obs_dim, self.action_dim,
                                     feature_dim, hidden_dim).to(device)
@@ -188,11 +196,21 @@ class DDPGAgent:
                                                 lr=lr)
         else:
             self.encoder_opt = None
+
+        print("encoder optimizer initialized...")
+
         self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=lr)
+
+        print("actor optimizer initialized...")
+
         self.critic_opt = torch.optim.Adam(self.critic.parameters(), lr=lr)
+
+        print("critic optimizer initialized...")
 
         self.train()
         self.critic_target.train()
+
+        print("DDPGAgent initialized...")
 
     def train(self, training=True):
         self.training = training
