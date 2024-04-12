@@ -190,12 +190,12 @@ class SFSimpleAgent(DDPGAgent):
             obs = obs.detach()
             next_obs = next_obs.detach()
 
-        # task_normalized = np.copy(task.detach().cpu().numpy())
-        # task_normalized = task / np.linalg.norm(task_normalized)
+        # normalize task
+        task_normalized = F.normalize(task, p=2, dim=-1)
 
         # extend observations with normalized task
-        obs = torch.cat([obs, task], dim=1)
-        next_obs = torch.cat([next_obs, task], dim=1)
+        obs = torch.cat([obs, task_normalized], dim=1)
+        next_obs = torch.cat([next_obs, task_normalized], dim=1)
 
         # update meta
         if step % self.update_task_every_step == 0:
