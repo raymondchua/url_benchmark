@@ -166,6 +166,9 @@ class Workspace:
         return self._replay_iter
 
     def eval(self, task_id: int = None):
+
+        assert task_id is not None, "task_id must be provided for evaluation"
+
         current_eval_env = self.eval_envs[task_id]
         step, episode, total_reward = 0, 0, 0
         eval_until_episode = utils.Until(self.cfg.num_eval_episodes)
@@ -290,7 +293,7 @@ class Workspace:
                     if eval_every_step(self.global_step):
                         self.logger.log('eval_total_time', self.timer.total_time(),
                                         self.global_frame)
-                        self.eval()
+                        self.eval(task_id)
 
                     meta = self.agent.solved_meta
 
