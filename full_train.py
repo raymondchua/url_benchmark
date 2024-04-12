@@ -83,9 +83,6 @@ class Workspace:
         self._global_episode = 0
         self._exposure_id = 0
 
-        # flatten the cfg file
-        self._cfg_flatten = utils.dictionary_flatten(self.cfg)
-
         # create logger
         if cfg.use_wandb:
             exp_name = '_'.join([
@@ -146,6 +143,9 @@ class Workspace:
         print("replay loader created...")
 
         self._replay_iter = None
+
+        # flatten the cfg file
+        self._cfg_flatten = utils.dictionary_flatten(self.cfg)
 
     @property
     def global_step(self):
