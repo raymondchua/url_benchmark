@@ -244,13 +244,17 @@ class DDPGAgent:
             # value = value / torch.norm(value)
             value = torch.as_tensor(value, device=self.device).unsqueeze(0)
             value = F.normalize(value, p=2, dim=-1)
+            print("value: ", value)
             inputs.append(value)
         inpt = torch.cat(inputs, dim=-1)
+        print("inpt: ", inpt)
         #assert obs.shape[-1] == self.obs_shape[-1]
         stddev = utils.schedule(self.stddev_schedule, step)
         dist = self.actor(inpt, stddev)
+
         if eval_mode:
             action = dist.mean
+            print("action in acting: ", action)
         else:
             action = dist.sample(clip=None)
             if step < self.num_expl_steps:
