@@ -174,10 +174,10 @@ class DDPGAgent:
 
         print("encoder initialized...")
 
-        self.actor = Actor(obs_type, self.obs_dim, self.action_dim,
-                           feature_dim, hidden_dim).to(device)
-
-        print("actor initialized...")
+        # self.actor = Actor(obs_type, self.obs_dim, self.action_dim,
+        #                    feature_dim, hidden_dim).to(device)
+        #
+        # print("actor initialized...")
 
         self.critic = Critic(obs_type, self.obs_dim, self.action_dim,
                              feature_dim, hidden_dim).to(device)
