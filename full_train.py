@@ -337,7 +337,7 @@ def main(cfg):
         workspace.load_snapshot()
 
     print("workspace loaded. Training...")
-    # workspace.train()
+    workspace.train()
 
 if __name__ == '__main__':
     main()
