@@ -60,6 +60,8 @@ class Actor(nn.Module):
     def forward(self, obs, std):
         h = self.trunk(obs)
 
+        print("h: ", h)
+
         mu = self.policy(h)
 
         print("mu before tanh: ", mu)
