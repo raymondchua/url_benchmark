@@ -61,6 +61,9 @@ class Actor(nn.Module):
         h = self.trunk(obs)
 
         mu = self.policy(h)
+
+        print("mu before tanh: ", mu)
+
         mu = torch.tanh(mu)
         std = torch.ones_like(mu) * std
 
