@@ -157,7 +157,7 @@ class DDPGAgent:
         self.stddev_clip = stddev_clip
         self.init_critic = init_critic
         self.feature_dim = feature_dim
-        self.solved_meta = OrderedDict()
+        sel
         self.update_encoder = update_encoder
 
         print("initializing DDPGAgent...")
@@ -345,3 +345,7 @@ class DDPGAgent:
                                  self.critic_target_tau)
 
         return metrics
+
+    @torch.no_grad()
+    def solved_meta(self):
+        return None
