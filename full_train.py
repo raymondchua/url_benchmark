@@ -73,36 +73,36 @@ class Workspace:
                                 cfg.agent)
 
         print("agent created...")
-
-        # get meta specs
-        meta_specs = self.agent.get_meta_specs()
-        # create replay buffer
-        data_specs = (self.train_env.observation_spec(),
-                      self.train_env.action_spec(),
-                      specs.Array((1,), np.float32, 'reward'),
-                      specs.Array((1,), np.float32, 'discount'))
-
-        print("replay buffer created...")
-
-        # create data storage
-        self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-                                                  self.work_dir / 'buffer')
-        # self.replay_storage = None
-
-        print("data storage created...")
         #
-        # create replay buffer
-        self.replay_loader = make_replay_loader(self.replay_storage,
-                                                cfg.replay_buffer_size,
-                                                cfg.batch_size,
-                                                cfg.replay_buffer_num_workers,
-                                                False, cfg.nstep, cfg.discount)
-        # self.replay_loader = None
-
-        print("replay loader created...")
-
-        self._replay_iter = None
-
+        # # get meta specs
+        # meta_specs = self.agent.get_meta_specs()
+        # # create replay buffer
+        # data_specs = (self.train_env.observation_spec(),
+        #               self.train_env.action_spec(),
+        #               specs.Array((1,), np.float32, 'reward'),
+        #               specs.Array((1,), np.float32, 'discount'))
+        #
+        # print("replay buffer created...")
+        #
+        # # create data storage
+        # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+        #                                           self.work_dir / 'buffer')
+        # # self.replay_storage = None
+        #
+        # print("data storage created...")
+        # #
+        # # create replay buffer
+        # self.replay_loader = make_replay_loader(self.replay_storage,
+        #                                         cfg.replay_buffer_size,
+        #                                         cfg.batch_size,
+        #                                         cfg.replay_buffer_num_workers,
+        #                                         False, cfg.nstep, cfg.discount)
+        # # self.replay_loader = None
+        #
+        # print("replay loader created...")
+        #
+        # self._replay_iter = None
+        #
         # create video recorders
         self.eval_video_recorder = VideoRecorder(
             self.work_dir if cfg.save_eval_video else None,
@@ -120,18 +120,18 @@ class Workspace:
         self._global_step = 0
         self._global_episode = 0
         self._exposure_id = 0
-
-        # flatten the cfg file
-        self._cfg_flatten = utils.dictionary_flatten(self.cfg)
-
-        # create logger
-        if cfg.use_wandb:
-            exp_name = '_'.join([
-                cfg.experiment, cfg.agent.name, cfg.domain, cfg.obs_type,
-                str(cfg.seed)
-            ])
-            project_name = "continual_rl" + self.cfg.domain
-            wandb.init(project=project_name, group=cfg.agent.name, name=exp_name, config=self._cfg_flatten)
+        #
+        # # flatten the cfg file
+        # self._cfg_flatten = utils.dictionary_flatten(self.cfg)
+        #
+        # # create logger
+        # if cfg.use_wandb:
+        #     exp_name = '_'.join([
+        #         cfg.experiment, cfg.agent.name, cfg.domain, cfg.obs_type,
+        #         str(cfg.seed)
+        #     ])
+        #     project_name = "continual_rl" + self.cfg.domain
+        #     wandb.init(project=project_name, group=cfg.agent.name, name=exp_name, config=self._cfg_flatten)
 
     @property
     def global_step(self):
@@ -145,11 +145,11 @@ class Workspace:
     def global_frame(self):
         return self.global_step * self.cfg.action_repeat
 
-    @property
-    def replay_iter(self):
-        if self._replay_iter is None:
-            self._replay_iter = iter(self.replay_loader)
-        return self._replay_iter
+    # @property
+    # def replay_iter(self):
+    #     if self._replay_iter is None:
+    #         self._replay_iter = iter(self.replay_loader)
+    #     return self._replay_iter
 
     def eval(self):
         step, episode, total_reward = 0, 0, 0
@@ -178,137 +178,136 @@ class Workspace:
             log('episode', self.global_episode)
             log('step', self.global_step)
             log('task_id', self.current_task_id)
-            log('exposure_id', self._exposure_id)
+            # log('exposure_id', self._exposure_id)
 
-    def train(self):
-        # predicates
-        train_until_step = utils.Until(self.cfg.num_train_frames,
-                                       self.cfg.action_repeat)
-        seed_until_step = utils.Until(self.cfg.num_seed_frames,
-                                      self.cfg.action_repeat)
-        eval_every_step = utils.Every(self.cfg.eval_every_frames,
-                                      self.cfg.action_repeat)
-
-        total_returns = 0
-
-        for exposure_id in range(self.cfg.num_exposures):
-            if self.cfg.terminate_after_first_task and exposure_id > 0:
-                break
-            for task_id in range(self.num_tasks):
-                total_returns_task = 0
-                if self.cfg.terminate_after_first_task and task_id > 0:
-                    break
-                task_step = 0
-                self.current_task_id = task_id
-                self._exposure_id = exposure_id
-                current_task = self.tasks[task_id]
-
-                # delete any old training and eval environment
-                del self.train_env, self.eval_env
-
-                # create new training and eval environment
-                self.train_env = dmc.make(current_task, self.cfg.obs_type, self.cfg.frame_stack,
-                                          self.cfg.action_repeat, self.cfg.seed)
-                self.eval_env = dmc.make(current_task, self.cfg.obs_type, self.cfg.frame_stack,
-                                         self.cfg.action_repeat, self.cfg.seed)
-
-                # delete any old replay buffer and replay loader
-                # if self.replay_storage is not None:
-                #     del self.replay_storage, self.replay_loader
-
-                # get meta specs
-                # meta_specs = self.agent.get_meta_specs()
-                # create replay buffer
-                # data_specs = (self.train_env.observation_spec(),
-                #               self.train_env.action_spec(),
-                #               specs.Array((1,), np.float32, 'reward'),
-                #               specs.Array((1,), np.float32, 'discount'))
-
-                # # create new replay buffer
-                # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
-                #                                           self.work_dir / 'buffer')
-                #
-                # # create replay buffer
-                # self.replay_loader = make_replay_loader(self.replay_storage,
-                #                                         self.cfg.replay_buffer_size,
-                #                                         self.cfg.batch_size,
-                #                                         self.cfg.replay_buffer_num_workers,
-                #                                         False, self.cfg.nstep, self.cfg.discount)
-
-                episode_step, episode_reward = 0, 0
-                time_step = self.train_env.reset()
-                meta = self.agent.init_meta()
-                self.replay_storage.add(time_step, meta)
-                self.train_video_recorder.init(time_step.observation)
-                metrics = None
-                while train_until_step(task_step):
-
-                    if time_step.last():
-                        self._global_episode += 1
-                        self.train_video_recorder.save(f'{self.global_frame}.mp4')
-                        # wait until all the metrics schema is populated
-                        if metrics is not None:
-                            # log stats
-                            elapsed_time, total_time = self.timer.reset()
-                            episode_frame = episode_step * self.cfg.action_repeat
-                            if self.global_episode % self.cfg.log_freq == 0:
-                                print("replay storage size: ", len(self.replay_storage))
-                                with self.logger.log_and_dump_ctx(self.global_frame,
-                                                                  ty='train') as log:
-                                    log('fps', episode_frame / elapsed_time)
-                                    log('total_time', total_time)
-                                    log('episode_reward', episode_reward)
-                                    log('episode_length', episode_frame)
-                                    log('episode', self.global_episode)
-                                    log('buffer_size', len(self.replay_storage))
-                                    log('step', self.global_step)
-                                    log('task_id', task_id)
-                                    log('total_returns', total_returns)
-                                    log('total_returns_task', total_returns_task)
-                                    log('exposure_id', exposure_id)
-
-                        # reset env
-                        time_step = self.train_env.reset()
-                        # meta = self.agent.init_meta()
-                        meta = self.agent.solved_meta
-                        self.replay_storage.add(time_step, meta)
-                        self.train_video_recorder.init(time_step.observation)
-                        # try to save snapshot
-                        if self.global_frame in self.cfg.snapshots:
-                            self.save_snapshot()
-                        episode_step = 0
-                        episode_reward = 0
-
-                    # try to evaluate
-                    if eval_every_step(self.global_step):
-                        self.logger.log('eval_total_time', self.timer.total_time(),
-                                        self.global_frame)
-                        self.eval()
-
-                    meta = self.agent.solved_meta
-
-                    # sample action
-                    with torch.no_grad(), utils.eval_mode(self.agent):
-                        action = self.agent.act(time_step.observation,
-                                                meta,
-                                                self.global_step,
-                                                eval_mode=False)
-
-                    # try to update the agent
-                    if not seed_until_step(self.global_step):
-                        metrics = self.agent.update(self.replay_iter, self.global_step)
-                        self.logger.log_metrics(metrics, self.global_frame, ty='train')
-
-                    # take env step
-                    time_step = self.train_env.step(action)
-                    episode_reward += time_step.reward
-                    total_returns += time_step.reward
-                    total_returns_task += time_step.reward
-                    self.replay_storage.add(time_step, meta)
-                    self.train_video_recorder.record(time_step.observation)
-                    episode_step += 1
-                    self._global_step += 1
-                    task_step += 1
+    # def train(self):
+    #     # predicates
+    #     train_until_step = utils.Until(self.cfg.num_train_frames,
+    #                                    self.cfg.action_repeat)
+    #     seed_until_step = utils.Until(self.cfg.num_seed_frames,
+    #                                   self.cfg.action_repeat)
+    #     eval_every_step = utils.Every(self.cfg.eval_every_frames,
+    #                                   self.cfg.action_repeat)
+    #
+    #     total_returns = 0
+    #
+    #     for exposure_id in range(self.cfg.num_exposures):
+    #         if self.cfg.terminate_after_first_task and exposure_id > 0:
+    #             break
+    #         for task_id in range(self.num_tasks):
+    #             total_returns_task = 0
+    #             if self.cfg.terminate_after_first_task and task_id > 0:
+    #                 break
+    #             task_step = 0
+    #             self.current_task_id = task_id
+    #             self._exposure_id = exposure_id
+    #             current_task = self.tasks[task_id]
+    #
+    #             # delete any old training and eval environment
+    #             del self.train_env, self.eval_env
+    #
+    #             # create new training and eval environment
+    #             self.train_env = dmc.make(current_task, self.cfg.obs_type, self.cfg.frame_stack,
+    #                                       self.cfg.action_repeat, self.cfg.seed)
+    #             self.eval_env = dmc.make(current_task, self.cfg.obs_type, self.cfg.frame_stack,
+    #                                      self.cfg.action_repeat, self.cfg.seed)
+    #
+    #             # delete any old replay buffer and replay loader
+    #             # if self.replay_storage is not None:
+    #             #     del self.replay_storage, self.replay_loader
+    #
+    #             # get meta specs
+    #             # meta_specs = self.agent.get_meta_specs()
+    #             # create replay buffer
+    #             # data_specs = (self.train_env.observation_spec(),
+    #             #               self.train_env.action_spec(),
+    #             #               specs.Array((1,), np.float32, 'reward'),
+    #             #               specs.Array((1,), np.float32, 'discount'))
+    #
+    #             # # create new replay buffer
+    #             # self.replay_storage = ReplayBufferStorage(data_specs, meta_specs,
+    #             #                                           self.work_dir / 'buffer')
+    #             #
+    #             # # create replay buffer
+    #             # self.replay_loader = make_replay_loader(self.replay_storage,
+    #             #                                         self.cfg.replay_buffer_size,
+    #             #                                         self.cfg.batch_size,
+    #             #                                         self.cfg.replay_buffer_num_workers,
+    #             #                                         False, self.cfg.nstep, self.cfg.discount)
+    #
+    #             episode_step, episode_reward = 0, 0
+    #             time_step = self.train_env.reset()
+    #             meta = self.agent.init_meta()
+    #             self.replay_storage.add(time_step, meta)
+    #             self.train_video_recorder.init(time_step.observation)
+    #             metrics = None
+    #             while train_until_step(task_step):
+    #
+    #                 if time_step.last():
+    #                     self._global_episode += 1
+    #                     self.train_video_recorder.save(f'{self.global_frame}.mp4')
+    #                     # wait until all the metrics schema is populated
+    #                     if metrics is not None:
+    #                         # log stats
+    #                         elapsed_time, total_time = self.timer.reset()
+    #                         episode_frame = episode_step * self.cfg.action_repeat
+    #                         if self.global_episode % self.cfg.log_freq == 0:
+    #                             with self.logger.log_and_dump_ctx(self.global_frame,
+    #                                                               ty='train') as log:
+    #                                 log('fps', episode_frame / elapsed_time)
+    #                                 log('total_time', total_time)
+    #                                 log('episode_reward', episode_reward)
+    #                                 log('episode_length', episode_frame)
+    #                                 log('episode', self.global_episode)
+    #                                 log('buffer_size', len(self.replay_storage))
+    #                                 log('step', self.global_step)
+    #                                 log('task_id', task_id)
+    #                                 log('total_returns', total_returns)
+    #                                 log('total_returns_task', total_returns_task)
+    #                                 log('exposure_id', exposure_id)
+    #
+    #                     # reset env
+    #                     time_step = self.train_env.reset()
+    #                     # meta = self.agent.init_meta()
+    #                     meta = self.agent.solved_meta
+    #                     self.replay_storage.add(time_step, meta)
+    #                     self.train_video_recorder.init(time_step.observation)
+    #                     # try to save snapshot
+    #                     if self.global_frame in self.cfg.snapshots:
+    #                         self.save_snapshot()
+    #                     episode_step = 0
+    #                     episode_reward = 0
+    #
+    #                 # try to evaluate
+    #                 if eval_every_step(self.global_step):
+    #                     self.logger.log('eval_total_time', self.timer.total_time(),
+    #                                     self.global_frame)
+    #                     self.eval()
+    #
+    #                 meta = self.agent.solved_meta
+    #
+    #                 # sample action
+    #                 with torch.no_grad(), utils.eval_mode(self.agent):
+    #                     action = self.agent.act(time_step.observation,
+    #                                             meta,
+    #                                             self.global_step,
+    #                                             eval_mode=False)
+    #
+    #                 # try to update the agent
+    #                 if not seed_until_step(self.global_step):
+    #                     metrics = self.agent.update(self.replay_iter, self.global_step)
+    #                     self.logger.log_metrics(metrics, self.global_frame, ty='train')
+    #
+    #                 # take env step
+    #                 time_step = self.train_env.step(action)
+    #                 episode_reward += time_step.reward
+    #                 total_returns += time_step.reward
+    #                 total_returns_task += time_step.reward
+    #                 self.replay_storage.add(time_step, meta)
+    #                 self.train_video_recorder.record(time_step.observation)
+    #                 episode_step += 1
+    #                 self._global_step += 1
+    #                 task_step += 1
 
     def save_snapshot(self):
         snapshot_dir = self.work_dir / Path(self.cfg.snapshot_dir)
@@ -330,7 +329,7 @@ def main(cfg):
         workspace.load_snapshot()
 
     print("workspace loaded. Training...")
-    workspace.train()
+    # workspace.train()
 
 if __name__ == '__main__':
     main()
