@@ -73,6 +73,7 @@ class Actor(nn.Module):
         h = self.trunk(obs)
 
         print("h: ", h)
+        print("norm of h: ", torch.norm(h))
 
         mu = self.policy(h)
 
