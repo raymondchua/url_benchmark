@@ -37,20 +37,14 @@ class Actor(nn.Module):
 
         feature_dim = feature_dim if obs_type == 'pixels' else hidden_dim
 
-        print("before trunk: ", obs_dim, feature_dim, hidden_dim, action_dim)
-
         self.trunk = nn.Sequential(nn.Linear(obs_dim, feature_dim),
                                    nn.LayerNorm(feature_dim), nn.Tanh())
-
-        print("trunk initialized...")
 
         policy_layers = []
         policy_layers += [
             nn.Linear(feature_dim, hidden_dim),
             nn.ReLU(inplace=True)
         ]
-
-        print("policy_layers initialized...")
 
         # add additional hidden layer for pixels
         if obs_type == 'pixels':
@@ -61,11 +55,7 @@ class Actor(nn.Module):
 
         policy_layers += [nn.Linear(hidden_dim, action_dim)]
 
-        # print("policy_layers: ", policy_layers)
-
         self.policy = nn.Sequential(*policy_layers)
-
-        print("policy initialized...")
 
         # self.apply(utils.weight_init)
         self.apply(utils.xavier_uniform_init)
@@ -73,31 +63,11 @@ class Actor(nn.Module):
 
     def forward(self, obs, std):
 
-        print("obs: ", obs)
-        print("norm of obs: ", torch.norm(obs))
-        print("mean of obs: ", torch.mean(obs))
-        print("std of obs: ", torch.std(obs))
-        print("max of obs: ", torch.max(obs))
-        print("min of obs: ", torch.min(obs))
-
         h = self.trunk(obs)
-
-        print("h: ", h)
-        print("norm of h: ", torch.norm(h))
-        print("mean of h: ", torch.mean(h))
-        print("std of h: ", torch.std(h))
-        print("max of h: ", torch.max(h))
-        print("min of h: ", torch.min(h))
-
         mu = self.policy(h)
-
-        print("mu before tanh: ", mu)
 
         mu = torch.tanh(mu)
         std = torch.ones_like(mu) * std
-
-        print("mu: ", mu)
-        print("std: ", std)
 
         dist = utils.TruncatedNormal(mu, std)
         return dist
@@ -195,8 +165,6 @@ class DDPGAgent:
         self.solved_meta = OrderedDict()
         self.update_encoder = update_encoder
 
-        print("initializing DDPGAgent...")
-
         # models
         if obs_type == 'pixels':
             self.aug = utils.RandomShiftsAug(pad=4)
@@ -207,17 +175,11 @@ class DDPGAgent:
             self.encoder = nn.Identity()
             self.obs_dim = obs_shape[0] + meta_dim
 
-        print("encoder initialized...")
-
         self.actor = Actor(obs_type, self.obs_dim, self.action_dim,
                            feature_dim, hidden_dim).to(device)
 
-        print("actor initialized...")
-
         self.critic = Critic(obs_type, self.obs_dim, self.action_dim,
                              feature_dim, hidden_dim).to(device)
-
-        print("critic initialized...")
 
         self.critic_target = Critic(obs_type, self.obs_dim, self.action_dim,
                                     feature_dim, hidden_dim).to(device)
@@ -232,20 +194,12 @@ class DDPGAgent:
         else:
             self.encoder_opt = None
 
-        print("encoder optimizer initialized...")
-
         self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=lr)
-
-        print("actor optimizer initialized...")
 
         self.critic_opt = torch.optim.Adam(self.critic.parameters(), lr=lr)
 
-        print("critic optimizer initialized...")
-
         self.train()
         self.critic_target.train()
-
-        print("DDPGAgent initialized...")
 
     def train(self, training=True):
         self.training = training
@@ -254,7 +208,7 @@ class DDPGAgent:
         self.critic.train(training)
 
     def init_from(self, other):
-        # copy parameters overx
+        # copy parameters over
         utils.hard_update_params(other.encoder, self.encoder)
         utils.hard_update_params(other.actor, self.actor)
         if self.init_critic:
@@ -281,14 +235,13 @@ class DDPGAgent:
             # value = F.normalize(value, p=2, dim=-1)
             inputs.append(value)
         inpt = torch.cat(inputs, dim=-1)
-        print("inpt: ", inpt)
         #assert obs.shape[-1] == self.obs_shape[-1]
         stddev = utils.schedule(self.stddev_schedule, step)
         dist = self.actor(inpt, stddev)
 
         if eval_mode:
             action = dist.mean
-            print("action in acting: ", action)
+
         else:
             action = dist.sample(clip=None)
             if step < self.num_expl_steps:

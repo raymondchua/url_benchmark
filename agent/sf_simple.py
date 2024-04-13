@@ -77,8 +77,6 @@ class SFSimpleAgent(DDPGAgent):
         self, update_task_every_step, sf_dim, num_init_steps, lr_task, **kwargs
     ):
 
-        print("Initializing SFSimpleAgent before super().__init__...")
-
         self.sf_dim = sf_dim
         self.update_task_every_step = update_task_every_step
         self.num_init_steps = num_init_steps
@@ -93,8 +91,6 @@ class SFSimpleAgent(DDPGAgent):
         # create actor and critic
         super().__init__(**kwargs)
 
-        print("Initializing SFSimpleAgent after super().__init__...")
-
         # overwrite critic with critic sf
         self.critic = CriticSF(
             self.obs_type,
@@ -105,8 +101,6 @@ class SFSimpleAgent(DDPGAgent):
             self.sf_dim,
         ).to(self.device)
 
-        print("CriticSF network initialized...")
-
         self.critic_target = CriticSF(
             self.obs_type,
             self.obs_dim,
@@ -116,40 +110,23 @@ class SFSimpleAgent(DDPGAgent):
             self.sf_dim,
         ).to(self.device)
 
-        print("CriticSF target network initialized...")
-
         self.critic_target.load_state_dict(self.critic.state_dict())
 
-        print("CriticSF target network loaded with CriticSF network state_dict...")
-
         self.critic_opt = torch.optim.Adam(self.critic.parameters(), lr=self.lr)
-
-        print("CriticSF optimizer initialized...")
 
         self.task_params = nn.Parameter(
             torch.randn(self.sf_dim, requires_grad=True, device=self.device)
         )
 
-        print("Task parameters initialized...")
-
         self.task_opt = torch.optim.Adam([self.task_params], lr=self.lr_task)
-
-        print("Task optimizer initialized...")
 
         # set solved_meta to the value of the task_params
         with torch.no_grad():
             self.solved_meta = OrderedDict()
             self.solved_meta["task"] = self.task_params.detach().cpu().numpy()
 
-        print("Solved meta initialized...")
-
         self.train()
-
-        print("Training initialized...")
-
         self.critic_target.train()
-
-        print("Critic target network training initialized...")
 
     def get_meta_specs(self):
         """

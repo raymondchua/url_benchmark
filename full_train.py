@@ -32,7 +32,6 @@ def make_agent(obs_type, obs_spec, action_spec, num_expl_steps, cfg):
     cfg.obs_shape = obs_spec.shape
     cfg.action_shape = action_spec.shape
     cfg.num_expl_steps = num_expl_steps
-    print("instantiating agent...")
     return hydra.utils.instantiate(cfg)
 
 
@@ -46,8 +45,6 @@ class Workspace:
         self.device = torch.device(cfg.device)
 
         self.logger = Logger(self.work_dir, use_tb=cfg.use_tb, use_wandb=cfg.use_wandb)
-
-        print("logger created...")
 
         # create envs
         if self.cfg.same_reward_for_all_tasks:
@@ -71,8 +68,6 @@ class Workspace:
             camera_id=0 if "quadruped" not in self.cfg.domain else 2,
             use_wandb=self.cfg.use_wandb,
         )
-
-        print("video recorders created...")
 
         self.timer = utils.Timer()
         self._global_step = 0
@@ -124,8 +119,6 @@ class Workspace:
             self.train_envs.append(train_env)
             self.eval_envs.append(eval_env)
 
-        print("envs created...")
-
         # create agent
         self.agent = make_agent(
             cfg.obs_type,
@@ -134,8 +127,6 @@ class Workspace:
             cfg.num_seed_frames // cfg.action_repeat,
             cfg.agent,
         )
-
-        print("agent created...")
 
         # get meta specs
         meta_specs = self.agent.get_meta_specs()
@@ -147,14 +138,10 @@ class Workspace:
             specs.Array((1,), np.float32, "discount"),
         )
 
-        print("replay buffer created...")
-
         # create data storage
         self.replay_storage = ReplayBufferStorage(
             data_specs, meta_specs, self.work_dir / "buffer"
         )
-
-        print("data storage created...")
 
         # create replay buffer
         self.replay_loader = make_replay_loader(
@@ -166,8 +153,6 @@ class Workspace:
             cfg.nstep,
             cfg.discount,
         )
-
-        print("replay loader created...")
 
         self._replay_iter = None
 
@@ -363,7 +348,6 @@ def main(cfg):
         print(f"resuming: {snapshot}")
         workspace.load_snapshot()
 
-    print("workspace loaded. Training...")
     workspace.train()
 
 
