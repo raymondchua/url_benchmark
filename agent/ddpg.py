@@ -59,9 +59,9 @@ class Actor(nn.Module):
                 nn.ReLU(inplace=True)
             ]
 
-        policy_layers += [nn.Linear(hidden_dim, action_dim)]
+        # policy_layers += [nn.Linear(hidden_dim, action_dim)]
 
-        print("policy_layers: ", policy_layers)
+        # print("policy_layers: ", policy_layers)
 
         self.policy = nn.Sequential(*policy_layers)
 
