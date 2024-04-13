@@ -211,9 +211,6 @@ class Workspace:
                     action = self.agent.act(
                         time_step.observation, meta, self.global_step, eval_mode=True
                     )
-                print("timestep observation: ", time_step.observation)
-                print("meta: ", meta)
-                print("action: ", action)
                 time_step = current_eval_env.step(action)
                 self.eval_video_recorder.record(current_eval_env)
                 total_reward += time_step.reward
@@ -304,6 +301,7 @@ class Workspace:
                         episode_reward = 0
 
                     if seed_until_step(self.global_step):
+                        print("using init meta")
                         meta = self.agent.init_meta()
                     else:
                         meta = self.agent.solved_meta
