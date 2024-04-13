@@ -303,7 +303,10 @@ class Workspace:
                         episode_step = 0
                         episode_reward = 0
 
-                    meta = self.agent.solved_meta
+                    if seed_until_step(self.global_step):
+                        meta = self.agent.init_meta()
+                    else:
+                        meta = self.agent.solved_meta
 
                     # try to evaluate
                     if eval_every_step(self.global_step):
