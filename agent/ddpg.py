@@ -37,23 +37,35 @@ class Actor(nn.Module):
 
         feature_dim = feature_dim if obs_type == 'pixels' else hidden_dim
 
+        print("before trunk: ", obs_dim, feature_dim, hidden_dim, action_dim)
+
         self.trunk = nn.Sequential(nn.Linear(obs_dim, feature_dim),
                                    nn.LayerNorm(feature_dim), nn.Tanh())
+
+        print("trunk initialized...")
 
         policy_layers = []
         policy_layers += [
             nn.Linear(feature_dim, hidden_dim),
             nn.ReLU(inplace=True)
         ]
+
+        print("policy_layers initialized...")
+
         # add additional hidden layer for pixels
         if obs_type == 'pixels':
             policy_layers += [
                 nn.Linear(hidden_dim, hidden_dim),
                 nn.ReLU(inplace=True)
             ]
+
         policy_layers += [nn.Linear(hidden_dim, action_dim)]
 
+        print("policy_layers: ", policy_layers)
+
         self.policy = nn.Sequential(*policy_layers)
+
+        print("policy initialized...")
 
         self.apply(utils.weight_init)
 
