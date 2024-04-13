@@ -74,6 +74,10 @@ class Actor(nn.Module):
 
         print("h: ", h)
         print("norm of h: ", torch.norm(h))
+        print("mean of h: ", torch.mean(h))
+        print("std of h: ", torch.std(h))
+        print("max of h: ", torch.max(h))
+        print("min of h: ", torch.min(h))
 
         mu = self.policy(h)
 
