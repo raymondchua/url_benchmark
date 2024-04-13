@@ -193,15 +193,17 @@ class Workspace:
 
     def eval(self, task_id: int = None, meta=None):
 
-        assert meta is not None, "meta must be provided for evaluation"
+        # assert meta is not None, "meta must be provided for evaluation"
 
         current_eval_env = self.eval_envs[task_id]
         step, episode, total_reward = 0, 0, 0
         eval_until_episode = utils.Until(self.cfg.num_eval_episodes)
 
         # meta is None for agents that do not use meta
-        if meta is None:
-            meta = self.agent.init_meta()
+        # if meta is None:
+        #     meta = self.agent.init_meta()
+
+        meta = None
 
         while eval_until_episode(episode):
             time_step = current_eval_env.reset()
