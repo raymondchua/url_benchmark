@@ -70,6 +70,14 @@ class Actor(nn.Module):
         self.apply(utils.weight_init)
 
     def forward(self, obs, std):
+
+        print("obs: ", obs)
+        print("norm of obs: ", torch.norm(obs))
+        print("mean of obs: ", torch.mean(obs))
+        print("std of obs: ", torch.std(obs))
+        print("max of obs: ", torch.max(obs))
+        print("min of obs: ", torch.min(obs))
+
         h = self.trunk(obs)
 
         print("h: ", h)
@@ -244,7 +252,7 @@ class DDPGAgent:
         self.critic.train(training)
 
     def init_from(self, other):
-        # copy parameters over
+        # copy parameters overx
         utils.hard_update_params(other.encoder, self.encoder)
         utils.hard_update_params(other.actor, self.actor)
         if self.init_critic:
@@ -269,12 +277,6 @@ class DDPGAgent:
             # value = value / torch.norm(value)
             value = torch.as_tensor(value, device=self.device).unsqueeze(0)
             value = F.normalize(value, p=2, dim=-1)
-            print("value: ", value)
-            print("norm of value: ", torch.norm(value))
-            print("mean of value: ", torch.mean(value))
-            print("std of value: ", torch.std(value))
-            print("max of value: ", torch.max(value))
-            print("min of value: ", torch.min(value))
             inputs.append(value)
         inpt = torch.cat(inputs, dim=-1)
         print("inpt: ", inpt)
