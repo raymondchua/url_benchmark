@@ -204,7 +204,7 @@ class Workspace:
         # if meta is None:
         #     meta = self.agent.init_meta()
 
-        meta = OrderedDict()
+        meta = self.agent.init_meta()
 
         while eval_until_episode(episode):
             time_step = current_eval_env.reset()
