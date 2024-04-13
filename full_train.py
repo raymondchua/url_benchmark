@@ -20,6 +20,7 @@ import utils
 from logger import Logger
 from replay_buffer import ReplayBufferStorage, make_replay_loader
 from video import TrainVideoRecorder, VideoRecorder
+from collections import OrderedDict
 
 torch.backends.cudnn.benchmark = True
 
@@ -191,7 +192,7 @@ class Workspace:
             self._replay_iter = iter(self.replay_loader)
         return self._replay_iter
 
-    def eval(self, task_id: int = None, meta=None):
+    def eval(self, task_id: int = None, meta = None):
 
         # assert meta is not None, "meta must be provided for evaluation"
 
@@ -203,7 +204,7 @@ class Workspace:
         # if meta is None:
         #     meta = self.agent.init_meta()
 
-        meta = None
+        meta = OrderedDict()
 
         while eval_until_episode(episode):
             time_step = current_eval_env.reset()
