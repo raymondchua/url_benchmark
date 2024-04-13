@@ -47,7 +47,7 @@ class Actor(nn.Module):
         policy_layers = []
         policy_layers += [
             nn.Linear(feature_dim, hidden_dim),
-            nn.ReLU(inplace=True)
+            # nn.ReLU(inplace=True)
         ]
 
         print("policy_layers initialized...")
