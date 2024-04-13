@@ -194,7 +194,7 @@ class Workspace:
 
     def eval(self, task_id: int = None, meta = None):
 
-        # assert meta is not None, "meta must be provided for evaluation"
+        assert meta is not None, "meta must be provided for evaluation"
 
         current_eval_env = self.eval_envs[task_id]
         step, episode, total_reward = 0, 0, 0
@@ -204,7 +204,7 @@ class Workspace:
         # if meta is None:
         #     meta = self.agent.init_meta()
 
-        meta = self.agent.init_meta()
+        # meta = self.agent.init_meta()
 
         while eval_until_episode(episode):
             time_step = current_eval_env.reset()
@@ -293,7 +293,7 @@ class Workspace:
 
                         # reset env
                         time_step = current_train_env.reset()
-                        # meta = self.agent.init_meta()
+
                         meta = self.agent.solved_meta
                         self.replay_storage.add(time_step, meta)
                         self.train_video_recorder.init(time_step.observation)
@@ -304,7 +304,6 @@ class Workspace:
                         episode_reward = 0
 
                     if seed_until_step(self.global_step):
-                        print("using init meta")
                         meta = self.agent.init_meta()
                     else:
                         meta = self.agent.solved_meta
