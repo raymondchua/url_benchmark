@@ -67,7 +67,9 @@ class Actor(nn.Module):
 
         print("policy initialized...")
 
-        self.apply(utils.weight_init)
+        # self.apply(utils.weight_init)
+        self.apply(utils.xavier_uniform_init)
+
 
     def forward(self, obs, std):
 

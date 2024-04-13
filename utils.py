@@ -68,6 +68,18 @@ def weight_init(m):
         if hasattr(m.bias, "data"):
             m.bias.data.fill_(0.0)
 
+def xavier_uniform_init(m):
+    """Xavier uniform weight init for Conv2D and Linear layers."""
+    if isinstance(m, nn.Linear):
+        nn.init.xavier_uniform_(m.weight.data)
+        if hasattr(m.bias, "data"):
+            m.bias.data.fill_(0.0)
+    elif isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
+        nn.init.xavier_uniform_(m.weight.data)
+        if hasattr(m.bias, "data"):
+            m.bias.data.fill_(0.0)
+
+
 
 def grad_norm(params, norm_type=2.0):
     params = [p for p in params if p.grad is not None]
