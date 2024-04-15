@@ -39,8 +39,8 @@ use_wandb: false
 # experiment
 experiment: exp
 num_exposures: 2
-#log_freq: 10  # log every n episodes
-log_freq: 10000  # log every n steps
+log_freq: 10  # log every n episodes
+#log_freq: 10000  # log every n steps
 terminate_after_first_task: false
 same_reward_for_all_tasks: true
 
