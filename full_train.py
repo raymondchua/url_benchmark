@@ -260,20 +260,23 @@ class Workspace:
                             # log stats
                             elapsed_time, total_time = self.timer.reset()
                             episode_frame = episode_step * self.cfg.action_repeat
-                            with self.logger.log_and_dump_ctx(
-                                self.global_frame, ty="train"
-                            ) as log:
-                                log("fps", episode_frame / elapsed_time)
-                                log("total_time", total_time)
-                                log("episode_reward", episode_reward)
-                                log("episode_length", episode_frame)
-                                log("episode", self.global_episode)
-                                log("buffer_size", len(self.replay_storage))
-                                log("step", self.global_step)
-                                log("task_id", task_id)
-                                log("total_returns", total_returns)
-                                log("total_returns_task", total_returns_task)
-                                log("exposure_id", exposure_id)
+                            print("global_step", self.global_step)
+                            print("condition: ", self.global_step % self.cfg.log_freq == 0)
+                            if self.global_step % self.cfg.log_freq == 0:
+                                with self.logger.log_and_dump_ctx(
+                                    self.global_frame, ty="train"
+                                ) as log:
+                                    log("fps", episode_frame / elapsed_time)
+                                    log("total_time", total_time)
+                                    log("episode_reward", episode_reward)
+                                    log("episode_length", episode_frame)
+                                    log("episode", self.global_episode)
+                                    log("buffer_size", len(self.replay_storage))
+                                    log("step", self.global_step)
+                                    log("task_id", task_id)
+                                    log("total_returns", total_returns)
+                                    log("total_returns_task", total_returns_task)
+                                    log("exposure_id", exposure_id)
 
                         # reset env
                         time_step = current_train_env.reset()
