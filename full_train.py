@@ -185,12 +185,6 @@ class Workspace:
         step, episode, total_reward = 0, 0, 0
         eval_until_episode = utils.Until(self.cfg.num_eval_episodes)
 
-        # meta is None for agents that do not use meta
-        # if meta is None:
-        #     meta = self.agent.init_meta()
-
-        # meta = self.agent.init_meta()
-
         while eval_until_episode(episode):
             time_step = current_eval_env.reset()
             self.eval_video_recorder.init(current_eval_env, enabled=(episode == 0))
@@ -252,7 +246,7 @@ class Workspace:
                 metrics = None
                 while train_until_step(task_step+1):
 
-                    if time_step.last() or self.global_step % (self.cfg.num_train_frames // self.cfg.action_repeat) == 0:
+                    if time_step.last():
                         self._global_episode += 1
                         self.train_video_recorder.save(f"{self.global_frame}.mp4")
                         # wait until all the metrics schema is populated
@@ -260,7 +254,7 @@ class Workspace:
                             # log stats
                             elapsed_time, total_time = self.timer.reset()
                             episode_frame = episode_step * self.cfg.action_repeat
-                            if self.global_step % self.cfg.log_freq == 0:
+                            if self.global_episode % self.cfg.log_freq == 0:
                                 with self.logger.log_and_dump_ctx(
                                     self.global_frame, ty="train"
                                 ) as log:
@@ -276,10 +270,6 @@ class Workspace:
                                     log("total_returns_task", total_returns_task)
                                     log("exposure_id", exposure_id)
 
-                                # reset episode stats after logging
-                                episode_step = 0
-                                episode_reward = 0
-
                         # reset env
                         time_step = current_train_env.reset()
 
@@ -289,8 +279,8 @@ class Workspace:
                         # try to save snapshot
                         if self.global_frame in self.cfg.snapshots:
                             self.save_snapshot()
-                        # episode_step = 0
-                        # episode_reward = 0
+                        episode_step = 0
+                        episode_reward = 0
 
                     if seed_until_step(self.global_step):
                         meta = self.agent.init_meta()
