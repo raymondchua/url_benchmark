@@ -74,25 +74,6 @@ class Workspace:
         self._global_episode = 0
         self._exposure_id = 0
 
-        # create logger
-        if cfg.use_wandb:
-            exp_name = "_".join(
-                [
-                    cfg.experiment,
-                    cfg.agent.name,
-                    cfg.domain,
-                    cfg.obs_type,
-                    str(cfg.seed),
-                ]
-            )
-            project_name = "continual_rl" + self.cfg.domain
-            wandb.init(
-                project=project_name,
-                group=cfg.agent.name,
-                name=exp_name,
-                config=self._cfg_flatten,
-            )
-
         self.train_envs = []
         self.eval_envs = []
 
@@ -158,6 +139,25 @@ class Workspace:
 
         # flatten the cfg file
         self._cfg_flatten = utils.dictionary_flatten(self.cfg)
+
+        # create logger
+        if cfg.use_wandb:
+            exp_name = "_".join(
+                [
+                    cfg.experiment,
+                    cfg.agent.name,
+                    cfg.domain,
+                    cfg.obs_type,
+                    str(cfg.seed),
+                ]
+            )
+            project_name = "continual_rl" + self.cfg.domain
+            wandb.init(
+                project=project_name,
+                group=cfg.agent.name,
+                name=exp_name,
+                config=self._cfg_flatten,
+            )
 
     @property
     def global_step(self):
@@ -276,6 +276,10 @@ class Workspace:
                                     log("total_returns_task", total_returns_task)
                                     log("exposure_id", exposure_id)
 
+                                # reset episode stats after logging
+                                episode_step = 0
+                                episode_reward = 0
+
                         # reset env
                         time_step = current_train_env.reset()
 
@@ -285,8 +289,8 @@ class Workspace:
                         # try to save snapshot
                         if self.global_frame in self.cfg.snapshots:
                             self.save_snapshot()
-                        episode_step = 0
-                        episode_reward = 0
+                        # episode_step = 0
+                        # episode_reward = 0
 
                     if seed_until_step(self.global_step):
                         meta = self.agent.init_meta()
