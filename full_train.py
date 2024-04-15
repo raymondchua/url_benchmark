@@ -252,7 +252,7 @@ class Workspace:
                 metrics = None
                 while train_until_step(task_step):
 
-                    if time_step.last() or self.global_step % task_step == 0:
+                    if time_step.last() or self.global_step % (self.cfg.num_train_frames // self.cfg.action_repeat) == 0:
                         self._global_episode += 1
                         self.train_video_recorder.save(f"{self.global_frame}.mp4")
                         # wait until all the metrics schema is populated
