@@ -252,17 +252,10 @@ class Workspace:
                 metrics = None
                 while train_until_step(task_step):
 
-                    if time_step.last():
+                    if time_step.last() or train_until_step(task_step-1):
                         self._global_episode += 1
                         self.train_video_recorder.save(f"{self.global_frame}.mp4")
                         # wait until all the metrics schema is populated
-                        # if metrics is not None:
-                        #     # log stats
-                        #     elapsed_time, total_time = self.timer.reset()
-                        #     episode_frame = episode_step * self.cfg.action_repeat
-                    print("global_step", self.global_step)
-                    print("condition: ", self.global_step % self.cfg.log_freq == 0)
-                    if self.global_step % self.cfg.log_freq == 0:
                         if metrics is not None:
                             # log stats
                             elapsed_time, total_time = self.timer.reset()
