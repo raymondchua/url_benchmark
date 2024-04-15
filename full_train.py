@@ -238,6 +238,8 @@ class Workspace:
                 if self.cfg.reset_buffer_every_task:
                     self.replay_storage.clear()
 
+                print("replay buffer size: ", len(self.replay_storage))
+
                 episode_step, episode_reward = 0, 0
                 time_step = current_train_env.reset()
                 meta = self.agent.init_meta()
