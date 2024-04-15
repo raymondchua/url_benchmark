@@ -250,7 +250,7 @@ class Workspace:
                 self.replay_storage.add(time_step, meta)
                 self.train_video_recorder.init(time_step.observation)
                 metrics = None
-                while train_until_step(task_step):
+                while train_until_step(task_step+1):
 
                     if time_step.last() or self.global_step % (self.cfg.num_train_frames // self.cfg.action_repeat) == 0:
                         self._global_episode += 1
