@@ -260,6 +260,8 @@ class Workspace:
                             # log stats
                             elapsed_time, total_time = self.timer.reset()
                             episode_frame = episode_step * self.cfg.action_repeat
+                            print("global_step", self.global_step)
+                            print("condition: ", self.global_step % self.cfg.log_freq == 0)
                             if self.global_step % self.cfg.log_freq == 0:
                                 with self.logger.log_and_dump_ctx(
                                     self.global_frame, ty="train"
