@@ -22,6 +22,7 @@ num_eval_episodes: 10
 save_snapshot_after_each_task: false
 snapshots: [100000, 500000, 1000000, 2000000]
 snapshot_dir: ./full_train/models/${obs_type}/${domain}/${agent.name}/${seed}
+snapshot_base_dir: ./full_train/models/ # for testing loading from saved models only
 # replay buffer
 reset_buffer_every_task: false
 replay_buffer_size: 1000000
