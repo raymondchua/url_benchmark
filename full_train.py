@@ -141,6 +141,8 @@ class Workspace:
         # flatten the cfg file
         self._cfg_flatten = utils.dictionary_flatten(self.cfg)
 
+        logging.info("{}\n".format(self._cfg_flatten))
+
         # create logger
         if cfg.use_wandb:
             exp_name = "_".join(
