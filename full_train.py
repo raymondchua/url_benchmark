@@ -360,13 +360,7 @@ class Workspace:
 def main(cfg):
     from full_train import Workspace as W
 
-    root_dir = Path.cwd()
     workspace = W(cfg)
-    snapshot = root_dir / "snapshot.pt"
-    if snapshot.exists():
-        print(f"resuming: {snapshot}")
-        workspace.load_snapshot()
-
     workspace.train()
 
 
