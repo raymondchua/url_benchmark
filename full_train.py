@@ -351,6 +351,8 @@ class Workspace:
         payload = {k: self.__dict__[k] for k in keys_to_save}
         with snapshot.open("wb") as f:
             torch.save(payload, f)
+            logging.info(f"snapshot saved to {snapshot}")
+
 
 
 @hydra.main(config_path=".", config_name="full_train", version_base=None)
