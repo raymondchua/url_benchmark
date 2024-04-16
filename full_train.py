@@ -171,6 +171,7 @@ class Workspace:
                 name=exp_name,
                 config=self._cfg_flatten,
                 dir=wandb_dir_str,
+                mode="offline",
             )
 
         else:
