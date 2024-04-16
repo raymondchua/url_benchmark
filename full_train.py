@@ -151,12 +151,25 @@ class Workspace:
                     str(cfg.seed),
                 ]
             )
+
+            wandb_dir = self._cfg.logging.wandb_dir
+
+            # get current working directory and add wandb_dir
+            wandb_dir_absolute = Path.cwd() / wandb_dir
+
+            # convert wandb_dir_absolute to string
+            wandb_dir_str = wandb_dir_absolute.as_posix()
+
+            # log wandb_dir_str
+            logging.info("wandb_dir_str: %s", wandb_dir_str)
+
             project_name = "continual_rl" + self.cfg.domain
             wandb.init(
                 project=project_name,
                 group=cfg.agent.name,
                 name=exp_name,
                 config=self._cfg_flatten,
+                dir=wandb_dir_str,
             )
 
     @property
