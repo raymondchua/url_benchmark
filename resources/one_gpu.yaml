@@ -38,13 +38,9 @@ hydra:
     timeout_min: 4300
 
 logging:
-  save_all_correlation_matrices: true
   wandb_dir: /home/chuaraym/scratch/wandb/
 
 
 snapshot:
-  base_dir:  /home/chuaraym/scratch/CRLMSF/models/full_train/
+  base_dir:  /home/chuaraym/scratch/url_benchmark/models/full_train/
   save_snapshot_after_each_task: true
-
-visualization:
-  visitation_frequency: true
