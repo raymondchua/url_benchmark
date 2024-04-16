@@ -13,7 +13,7 @@ hydra:
       mail-type: BEGIN,END,FAIL,REQUEUE
       mail-user: raymond.chua@mail.mcgill.ca
       output: ${hydra.sweep.dir}/.submitit/slurm-%j.out
-      time: 1-00:00:00
+      time: 23:00:00
     comment: null
     constraint: null
     cpus_per_gpu: null
