@@ -173,6 +173,9 @@ class Workspace:
                 dir=wandb_dir_str,
             )
 
+        else:
+            wandb.init(mode="disabled")
+
     @property
     def global_step(self):
         return self._global_step
