@@ -23,6 +23,7 @@ from video import TrainVideoRecorder, VideoRecorder
 from collections import OrderedDict
 
 torch.backends.cudnn.benchmark = True
+from absl import logging
 
 from dmc_benchmark import PRIMAL_TASKS, CRL_TASKS_SAME_REWARD, CRL_TASKS_DIFF_REWARD
 
@@ -152,7 +153,7 @@ class Workspace:
                 ]
             )
 
-            wandb_dir = self._cfg.logging.wandb_dir
+            wandb_dir = self.cfg.wandb_dir
 
             # get current working directory and add wandb_dir
             wandb_dir_absolute = Path.cwd() / wandb_dir
