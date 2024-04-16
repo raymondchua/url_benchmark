@@ -55,7 +55,7 @@ class Workspace:
             self.tasks = CRL_TASKS_DIFF_REWARD[self.cfg.domain]
 
         self.num_tasks = len(self.tasks)
-        self.current_task_id = 0  # task id always starts from 0
+        self._current_task_id = 0  # task id always starts from 0
 
         # create video recorders
         self.eval_video_recorder = VideoRecorder(
@@ -224,7 +224,7 @@ class Workspace:
             log("episode_length", step * self.cfg.action_repeat / episode)
             log("episode", self.global_episode)
             log("step", self.global_step)
-            log("task_id", self.current_task_id)
+            log("task_id", self._current_task_id)
             log("exposure_id", self._exposure_id)
 
     def train(self):
@@ -247,16 +247,15 @@ class Workspace:
                 if self.cfg.terminate_after_first_task and task_id > 0:
                     break
                 task_step = 0
-                self.current_task_id = task_id
+                self._current_task_id = task_id
                 self._exposure_id = exposure_id
+
 
                 # create new training and eval environment
                 current_train_env = self.train_envs[task_id]
 
                 if self.cfg.reset_buffer_every_task:
                     self.replay_storage.clear()
-
-                print("replay buffer size: ", len(self.replay_storage))
 
                 episode_step, episode_reward = 0, 0
                 time_step = current_train_env.reset()
@@ -341,11 +340,14 @@ class Workspace:
                     self._global_step += 1
                     task_step += 1
 
+                # save snapshot at the end of each task
+                self.save_snapshot()
+
     def save_snapshot(self):
         snapshot_dir = self.work_dir / Path(self.cfg.snapshot_dir)
         snapshot_dir.mkdir(exist_ok=True, parents=True)
         snapshot = snapshot_dir / f"snapshot_{self.global_frame}.pt"
-        keys_to_save = ["agent", "_global_step", "_global_episode"]
+        keys_to_save = ["agent", "_global_step", "_global_episode", "_exposure_id", "_current_task_id"]
         payload = {k: self.__dict__[k] for k in keys_to_save}
         with snapshot.open("wb") as f:
             torch.save(payload, f)
