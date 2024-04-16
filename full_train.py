@@ -341,7 +341,8 @@ class Workspace:
                     task_step += 1
 
                 # save snapshot at the end of each task
-                self.save_snapshot()
+                if self.cfg.save_snapshot_after_each_task:
+                    self.save_snapshot()
 
     def save_snapshot(self):
         snapshot_dir = self.work_dir / Path(self.cfg.snapshot_dir)

@@ -19,6 +19,7 @@ num_seed_frames: 4000
 eval_every_frames: 10000
 num_eval_episodes: 10
 # snapshot
+save_snapshot_after_each_task: false
 snapshots: [100000, 500000, 1000000, 2000000]
 snapshot_dir: ./full_train/models/${obs_type}/${domain}/${agent.name}/${seed}
 # replay buffer
