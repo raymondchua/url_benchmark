@@ -38,7 +38,7 @@ def make_agent(obs_type, obs_spec, action_spec, num_expl_steps, cfg):
 
 class Workspace:
     def __init__(self, cfg):
-        self.work_dir = cfg.work_dir
+        self.work_dir = Path(cfg.work_dir)
         print(f"workspace: {self.work_dir}")
 
         self.cfg = cfg
