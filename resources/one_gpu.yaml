@@ -37,8 +37,9 @@ hydra:
     tasks_per_node: 1
     timeout_min: 4300
 
-logging:
-  wandb_dir: /home/chuaraym/scratch/wandb/
+
+wandb_dir: /home/chuaraym/scratch/wandb/
+work_dir: /home/chuaraym/scratch/url_benchmark/
 
 
 snapshot:
