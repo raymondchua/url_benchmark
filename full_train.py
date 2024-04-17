@@ -121,7 +121,7 @@ class Workspace:
         )
 
         # add agent name, seed and domain to replay directory
-        replay_dir = self.work_dir / "buffer" / cfg.agent.name / cfg.domain / str(cfg.seed) / cfg.same_reward_for_all_tasks
+        replay_dir = self.work_dir / "buffer" / cfg.agent.name / cfg.domain / str(cfg.seed) / str(cfg.same_reward_for_all_tasks)
 
         # create data storage
         self.replay_storage = ReplayBufferStorage(
