@@ -197,7 +197,8 @@ class ReplayBuffer(IterableDataset):
 def _worker_init_fn(worker_id):
     seed = np.random.get_state()[1][0] + worker_id
     np.random.seed(seed)
-    random.seed(seed)
+    seed_int = seed.item()
+    random.seed(seed_int)
 
 
 def make_replay_loader(
