@@ -120,9 +120,12 @@ class Workspace:
             specs.Array((1,), np.float32, "discount"),
         )
 
+        # add agent name, seed and domain to replay directory
+        replay_dir = self.work_dir / "buffer" / cfg.agent.name / cfg.domain / str(cfg.seed) / cfg.same_reward_for_all_tasks
+
         # create data storage
         self.replay_storage = ReplayBufferStorage(
-            data_specs, meta_specs, self.work_dir / "buffer"
+            data_specs, meta_specs, replay_dir
         )
 
         # create replay buffer
